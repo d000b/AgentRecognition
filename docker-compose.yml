@@ -2,9 +2,7 @@ version: "3.9"
 
 services:
   ocr:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: .
     container_name: ocr-server
     restart: unless-stopped
     ports:
