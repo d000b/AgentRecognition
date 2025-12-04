@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const chunks: Buffer[] = []
       
       for await (const chunk of fileStream) {
-        chunks.push(chunk)
+        chunks.push(chunk as BlobPart)
       }
       
       const blob = new Blob(chunks)
