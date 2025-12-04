@@ -7,3 +7,8 @@ fastapi
 uvicorn
 python-multipart
 sqlalchemy
+redis
+rq
+prometheus-client
+psycopg2-binary
+python-dotenv
