@@ -14,8 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const data = fs.readFileSync(f.filepath)
 
     // Proxy to backend
-    const fetch = require('node-fetch')
-    const FormData = require('form-data')
     const fd = new FormData()
     fd.append('file', data, f.originalFilename)
 
