@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  ocr:
+    build: ./backend
+    container_name: ocr-server
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_ID=Qwen/Qwen3-VL-30B-A3B-Instruct
+      - STORAGE_PATH=/data
+    volumes:
+      - ${STORAGE}:/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+    runtime: nvidia

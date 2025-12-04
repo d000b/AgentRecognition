@@ -1,0 +1,9 @@
+transformers>=4.40.0
+accelerate
+sentencepiece
+pillow
+pymupdf
+fastapi
+uvicorn
+python-multipart
+sqlalchemy
