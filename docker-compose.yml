@@ -8,7 +8,9 @@ services:
       - redis-data:/data
 
   backend:
-    build: ./
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: ocr-backend
     restart: unless-stopped
     environment:
@@ -18,21 +20,9 @@ services:
       - ADMIN_TOKEN=admintoken
       - USER_TOKEN=usertoken
     volumes:
-      - ./backend/storage:/data
+      - ${STORAGE}:/data
     ports:
       - '8000:8000'
-    depends_on:
-      - redis
-
-  worker:
-    build: ./
-    container_name: ocr-worker
-    command: python worker.py
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - MODEL_ID=${MODEL_ID}
-    volumes:
-      - ${STORAGE}:/data
     depends_on:
       - redis
 
@@ -47,7 +37,7 @@ services:
       - backend
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.8.0
     container_name: prometheus
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
