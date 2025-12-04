@@ -6,12 +6,12 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Python deps
-COPY backend/requirements.txt /app/requirements.txt
+COPY src/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy project
 WORKDIR /app
-COPY backend /app
+COPY src /app
 
 EXPOSE 8000
 
