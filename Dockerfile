@@ -40,7 +40,7 @@ RUN mkdir -p \
     /app/temp
 
 # Копирование исходного кода
-COPY . .
+COPY . /app/
 
 # Установка прав
 RUN chmod +x /app/entrypoint.sh
