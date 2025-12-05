@@ -1,14 +1,25 @@
-# docker-compose.yml
 version: '3.8'
 
 services:
   qwen-vl-api:
     build: .
+    container_name: agent-recognition-api
     ports:
       - "8000:8000"
     volumes:
-      - /path/to/your/nvme:/mnt/nvme  # Монтируем NVMe
-      - /path/to/your/raid:/mnt/raid  # Монтируем RAID
+      # Монтирование модели (только чтение)
+      - "E:/LLM/Qwen3-VL-OMNI:/app/model_weights:ro"
+      
+      # Монтирование хранилищ данных
+      - "D:/storage/AgentRecognition/uploads:/app/uploads"
+      - "D:/storage/AgentRecognition/processed:/app/processed"
+      - "D:/storage/AgentRecognition/temp:/app/temp"
+      - "D:/storage/AgentRecognition/logs:/app/logs"
+      - "D:/storage/AgentRecognition/database:/app/database"
+      
+      # Кэш HuggingFace
+      - "D:/storage/AgentRecognition/huggingface_cache:/root/.cache/huggingface"
+    
     deploy:
       resources:
         reservations:
@@ -16,30 +27,58 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    
     environment:
       - CUDA_VISIBLE_DEVICES=0
-      - TRANSFORMERS_CACHE=/mnt/raid/huggingface_cache
+      - MODEL_PATH=/app/model_weights
+      - UPLOAD_DIR=/app/uploads
+      - PROCESSED_DIR=/app/processed
+      - TEMP_DIR=/app/temp
+      - LOG_DIR=/app/logs
+      - DB_PATH=/app/database
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:////app/database/requests.db
+    
     restart: unless-stopped
-
-  # Опционально: Redis для очередей
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-
-  # Опционально: Celery для фоновых задач
-  worker:
-    build: .
-    command: celery -A worker.celery worker --loglevel=info
-    volumes:
-      - /path/to/your/nvme:/mnt/nvme
-      - /path/to/your/raid:/mnt/raid
     depends_on:
       - redis
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+    networks:
+      - agent-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: agent-recognition-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "D:/storage/AgentRecognition/redis_data:/data"
+    command: redis-server --appendonly yes --requirepass redispass123
+    networks:
+      - agent-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: agent-recognition-postgres
+    environment:
+      - POSTGRES_DB=agentrecognition
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secure_password123
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+    ports:
+      - "5432:5432"
+    volumes:
+      - "D:/storage/AgentRecognition/postgres_data:/var/lib/postgresql/data"
+      - "D:/storage/AgentRecognition/postgres_backups:/backups"
+    networks:
+      - agent-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  agent-network:
+    driver: bridge
