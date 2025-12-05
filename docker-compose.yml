@@ -1,21 +1,45 @@
-version: "3.9"
+# docker-compose.yml
+version: '3.8'
 
 services:
-  ocr:
-    build: ./backend
-    container_name: ocr-server
-    restart: unless-stopped
+  qwen-vl-api:
+    build: .
     ports:
       - "8000:8000"
-    environment:
-      - MODEL_ID=Qwen/Qwen3-VL-30B-A3B-Instruct
-      - STORAGE_PATH=/data
     volumes:
-      - ${STORAGE}:/data
+      - /path/to/your/nvme:/mnt/nvme  # Монтируем NVMe
+      - /path/to/your/raid:/mnt/raid  # Монтируем RAID
     deploy:
       resources:
         reservations:
           devices:
-            - capabilities: [gpu]
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - TRANSFORMERS_CACHE=/mnt/raid/huggingface_cache
+    restart: unless-stopped
 
-    runtime: nvidia
+  # Опционально: Redis для очередей
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  # Опционально: Celery для фоновых задач
+  worker:
+    build: .
+    command: celery -A worker.celery worker --loglevel=info
+    volumes:
+      - /path/to/your/nvme:/mnt/nvme
+      - /path/to/your/raid:/mnt/raid
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

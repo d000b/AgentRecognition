@@ -1,0 +1,125 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Qwen3-VL Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .upload-area { border: 2px dashed #ccc; padding: 40px; text-align: center; margin: 20px 0; }
+        .preview { max-width: 300px; margin: 10px 0; }
+        textarea { width: 100%; height: 100px; margin: 10px 0; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Qwen3-VL Interface</h1>
+    
+    <div class="upload-area" id="dropArea">
+        <p>Перетащите изображение сюда или кликните для выбора</p>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        <div id="previewContainer"></div>
+    </div>
+    
+    <textarea id="prompt" placeholder="Введите ваш запрос..."></textarea>
+    <button onclick="process()">Отправить</button>
+    
+    <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;"></div>
+    
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let uploadedImages = [];
+        
+        // Drag & drop обработчики
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+        
+        dropArea.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', handleFiles);
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function highlight() {
+            dropArea.style.borderColor = '#007bff';
+        }
+        
+        function unhighlight() {
+            dropArea.style.borderColor = '#ccc';
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files } });
+        }
+        
+        async function handleFiles(e) {
+            const files = [...e.target.files];
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = '';
+            
+            for (const file of files) {
+                // Загрузка на сервер
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const response = await fetch(`${API_URL}/upload/image`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                uploadedImages.push(result.image_url);
+                
+                // Превью
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview';
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        async function process() {
+            const prompt = document.getElementById('prompt').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Обработка...';
+            
+            const response = await fetch(`${API_URL}/infer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text_prompt: prompt,
+                    image_urls: uploadedImages
+                })
+            });
+            
+            const result = await response.json();
+            resultDiv.innerHTML = `<strong>Результат:</strong><br>${result.result}`;
+        }
+    </script>
+</body>
+</html>
