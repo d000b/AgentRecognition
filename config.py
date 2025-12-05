@@ -4,7 +4,6 @@ import logging
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
-from dataclasses import dataclass
 
 @dataclass
 class Config:
@@ -42,7 +41,7 @@ class Config:
     
     # Настройки файлов
     MAX_UPLOAD_SIZE_MB: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "100"))
-    ALLOWED_EXTENSIONS: set = set([".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".mp4", ".avi", ".mov"])
+    ALLOWED_EXTENSIONS = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".mp4", ".avi", ".mov" }
 
     # Настройки базы данных
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
