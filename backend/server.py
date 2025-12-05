@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from transformers import AutoProcessor, Qwen3VLMoeForConditionalGeneration
 from datetime import datetime
+import pathlib
 
 from models import Base, Document
 from pipelines import load_into_images
@@ -16,6 +17,9 @@ MODEL_ID = os.getenv("MODEL_ID", "Qwen/Qwen3-VL-30B-A3B-Instruct")
 engine = create_engine("sqlite:///db.sqlite3")
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
+
+if pathlib.Path(MODEL_ID).exists():
+    print(*[ file for file in pathlib.Path(MODEL_ID).iterdir() ])
 
 # Load model
 processor = AutoProcessor.from_pretrained(MODEL_ID)
