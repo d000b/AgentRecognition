@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir \
 
 # 4. Install transformers from git (or specific version)
 RUN  apt-get install -y git \
-     pip install --no-cache-dir git+https://github.com/huggingface/transformers
+  && pip install --no-cache-dir git+https://github.com/huggingface/transformers
 
 # Установка остальных зависимостей
 RUN pip install --no-cache-dir -r requirements.txt
