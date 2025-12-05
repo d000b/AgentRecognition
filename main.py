@@ -274,6 +274,7 @@ async def upload_file(
         try:
             db_file = FileStorage(
                 file_hash=file_id,
+                file_extension=file_ext,
                 original_filename=file.filename,
                 storage_path=filepath,
                 file_type=file_type,
