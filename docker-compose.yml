@@ -2,16 +2,17 @@ version: "3.9"
 
 services:
   ocr:
-    build: ./backend
+    build: .
     container_name: ocr-server
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      - MODEL_ID=Qwen/Qwen3-VL-30B-A3B-Instruct
+      - MODEL_ID=/app/model
       - STORAGE_PATH=/data
     volumes:
       - ${STORAGE}:/data
+      - ${MODEL_DIR}:/app/model
     deploy:
       resources:
         reservations:
