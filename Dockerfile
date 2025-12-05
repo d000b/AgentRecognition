@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04
 
 # 2. Set up Python 3.10 (well-supported)
 RUN apt-get update && apt-get install -y \
