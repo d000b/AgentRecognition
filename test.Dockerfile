@@ -11,12 +11,5 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy project
 WORKDIR /app
-# ---------------------------------------------------------
-# Copy test script
-# ---------------------------------------------------------
-COPY test_qwen.py /app/test_qwen.py
 
-# ---------------------------------------------------------
-# Run test on container start
-# ---------------------------------------------------------
-CMD ["python", "/app/test_qwen.py"]
+CMD ["/bin/bash"]
