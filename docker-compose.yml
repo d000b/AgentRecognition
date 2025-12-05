@@ -70,6 +70,7 @@ services:
     volumes:
       - "D:/storage/AgentRecognition/postgres_data:/var/lib/postgresql/data"
       - "D:/storage/AgentRecognition/postgres_backups:/backups"
+      - "E:/LLM/services/AgentRecognition/postgres_init:/docker-entrypoint-initdb.d"
     networks:
       - agent-network
     restart: unless-stopped

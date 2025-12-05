@@ -18,7 +18,7 @@ class Config:
     DB_PATH: str = os.getenv("DB_PATH", "/app/database")
     
     # Настройки базы данных
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:////app/database/requests.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://postgres:secure_password123@postgres:5432/agentrecognition")
     
     # Настройки Redis
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://redis:6379/0")
@@ -42,6 +42,20 @@ class Config:
     # Настройки файлов
     MAX_UPLOAD_SIZE_MB: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "100"))
     ALLOWED_EXTENSIONS: set = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".mp4", ".avi", ".mov"}
+    
+    # Настройки базы данных
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "secure_password123")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "agentrecognition")
+    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "postgres")
+    POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", "5432"))
+    
+    DATABASE_URL: str = os.getenv("DATABASE_URL", 
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}")
+    
+    # Альтернативно, можно использовать admin пользователя для приложения:
+    APP_DATABASE_URL: str = os.getenv("APP_DATABASE_URL",
+        f"postgresql://admin:secure_password123@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}")
     
     @classmethod
     def init_directories(cls) -> None:
