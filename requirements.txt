@@ -4,7 +4,7 @@ uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 
 # Модели и ML
-transformers==4.36.0
+# transformers==4.36.0
 accelerate==0.25.0
 safetensors==0.4.1
 Pillow==10.1.0

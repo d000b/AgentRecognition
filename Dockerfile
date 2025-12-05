@@ -27,6 +27,9 @@ COPY requirements.txt .
 # Установка Python зависимостей
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
+# Установка специализированного transformers
+RUN pip install git+https://github.com/huggingface/transformers
+
 # Установка torch с поддержкой CUDA
 RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
