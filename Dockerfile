@@ -43,6 +43,7 @@ RUN mkdir -p \
     /app/logs \
     /app/temp
 
+WORKDIR /app
 # Копирование исходного кода
 COPY . /app/
 
