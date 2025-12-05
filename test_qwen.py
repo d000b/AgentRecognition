@@ -11,6 +11,9 @@ print("Devices:", torch.cuda.device_count())
 print(">>> Listing model directory:", model_dir)
 print(os.listdir(model_dir))
 
+while True:
+    input()
+
 print(">>> Loading config...")
 
 from transformers import AutoConfig
