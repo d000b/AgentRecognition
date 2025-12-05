@@ -34,6 +34,7 @@ RUN  apt-get install -y git \
   && pip install --no-cache-dir git+https://github.com/huggingface/transformers
 
 # Установка остальных зависимостей
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Создание структуры директорий внутри контейнера
