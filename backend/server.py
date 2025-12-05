@@ -11,7 +11,7 @@ from pipelines import load_into_images
 from util import model_generate
 
 STORAGE_PATH = os.getenv("STORAGE_PATH", "/data")
-MODEL_ID = os.getenv("MODEL_ID", "Qwen/Qwen3-VL-30B-A3B-Instruct")
+MODEL_ID = os.getenv("MODEL_ID")
 
 # DB
 engine = create_engine("sqlite:///db.sqlite3")
