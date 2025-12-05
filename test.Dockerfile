@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy project
 WORKDIR /app
 
-CMD ["/bin/bash"]
+CMD ["python"]
