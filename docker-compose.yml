@@ -2,7 +2,9 @@ version: "3.9"
 
 services:
   ocr:
-    build: ./test.Dockerfile
+    build:
+      context: .
+      dockerfile: "test.Dockerfile"
     container_name: ocr-server
     restart: unless-stopped
     ports:
