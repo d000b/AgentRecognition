@@ -17,15 +17,7 @@ MODEL_ID = os.getenv("MODEL_ID")
 engine = create_engine("sqlite:///db.sqlite3")
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
-import os
-print(os.listdir(MODEL_ID))
 
-if pathlib.Path(MODEL_ID).exists():
-    print(*[ file for file in pathlib.Path(MODEL_ID).iterdir() ])
-
-
-input()
-exit(0)
 # Load model
 processor = AutoProcessor.from_pretrained(MODEL_ID)
 model = Qwen3VLMoeForConditionalGeneration.from_pretrained(
