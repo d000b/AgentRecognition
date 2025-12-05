@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir \
 #     --index-url https://download.pytorch.org/whl/nightly/cu124
 
 # 4. Install transformers from git (or specific version)
-RUN pip install --no-cache-dir git+https://github.com/huggingface/transformers
+RUN pip install --no-cache-dir https://github.com/huggingface/transformers
 
 # Установка остальных зависимостей
 RUN pip install --no-cache-dir -r requirements.txt
