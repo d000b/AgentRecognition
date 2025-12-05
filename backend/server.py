@@ -24,6 +24,7 @@ if pathlib.Path(MODEL_ID).exists():
     print(*[ file for file in pathlib.Path(MODEL_ID).iterdir() ])
 
 
+input()
 exit(0)
 # Load model
 processor = AutoProcessor.from_pretrained(MODEL_ID)
