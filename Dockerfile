@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # 2. Set up Python 3.10 (well-supported)
 RUN apt-get update && apt-get install -y \
@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir \
     torch==2.5.0 \
     torchvision==0.20.0 \
     torchaudio==2.5.0 \
-    --index-url https://download.pytorch.org/whl/cu124
+    --index-url https://download.pytorch.org/whl/cu118
 
 # If CUDA 12.4 packages aren't available yet, try:
 # Option B: Install PyTorch 2.5 with CUDA 12.1 (should work with 5060 Ti)
