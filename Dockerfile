@@ -1,37 +1,35 @@
 FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 
-# Установка системных зависимостей
+# 2. Set up Python 3.10 (well-supported)
 RUN apt-get update && apt-get install -y \
     python3.10 \
     python3-pip \
     python3.10-venv \
-    git \
-    wget \
-    curl \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
-    ffmpeg \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && ln -s /usr/bin/python3.10 /usr/bin/python
 
-# Создание рабочей директории
-WORKDIR /app
+# 3. Install PyTorch with CUDA 12.4 support
+# Option A: Install from PyPI with CUDA 12.4 (if available)
+RUN pip install --no-cache-dir \
+    torch==2.5.0 \
+    torchvision==0.20.0 \
+    torchaudio==2.5.0 \
+    --index-url https://download.pytorch.org/whl/cu124
 
-# Копирование зависимостей
-COPY requirements.txt .
+# If CUDA 12.4 packages aren't available yet, try:
+# Option B: Install PyTorch 2.5 with CUDA 12.1 (should work with 5060 Ti)
+# RUN pip install --no-cache-dir \
+#     torch==2.5.0 \
+#     torchvision==0.20.0 \
+#     torchaudio==2.5.0 \
+#     --index-url https://download.pytorch.org/whl/cu121
 
-# Установка Python зависимостей
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+# Option C: For RTX 5060 Ti, you might need nightly build
+# RUN pip install --no-cache-dir \
+#     --pre torch torchvision torchaudio \
+#     --index-url https://download.pytorch.org/whl/nightly/cu124
 
-# Установка специализированного transformers
-RUN pip install git+https://github.com/huggingface/transformers
-
-# Установка torch с поддержкой CUDA
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# 4. Install transformers from git (or specific version)
+RUN pip install --no-cache-dir git+https://github.com/huggingface/transformers
 
 # Установка остальных зависимостей
 RUN pip install --no-cache-dir -r requirements.txt
