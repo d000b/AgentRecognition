@@ -21,4 +21,4 @@ COPY . /app/
 RUN chmod +x /app/entrypoint.sh
 
 # Точка входа
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
