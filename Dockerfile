@@ -1,7 +1,6 @@
 FROM pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
 
-# 4. Install transformers from git (or specific version)
-RUN  apt-get install -y git \
+RUN apt update && apt-get install -y git \
   && pip install --no-cache-dir git+https://github.com/huggingface/transformers
 
 # Установка остальных зависимостей
