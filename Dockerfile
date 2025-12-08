@@ -1,15 +1,21 @@
 FROM nvidia/cuda:13.0.2-cudnn-runtime-ubuntu24.04
 
+# Python + venv
 RUN apt-get update && apt-get install -y \
-    python3.12       \
-    python3.12-venv  \
-    python3-pip      && \
-    ln -s /usr/bin/python3.12 /usr/bin/python
+    python3 \
+    python3-pip \
+    python3-venv
 
+# Создание виртуального окружения
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Обновление pip / setuptools / wheel
+RUN pip install --upgrade pip setuptools wheel
+
+# Установка PyTorch с поддержкой CUDA 13.0
 RUN pip install --no-cache-dir \
-    torch \
-    torchvision \
-    torchaudio \
+    torch torchvision torchaudio \
     --index-url https://download.pytorch.org/whl/cu130
 
 # If CUDA 12.4 packages aren't available yet, try:
