@@ -1,4 +1,4 @@
-FROM nvidia/cuda::13.0.2-cudnn-runtime-ubuntu24.04
+FROM nvidia/cuda:13.0.2-cudnn-runtime-ubuntu24.04
 
 # 2. Set up Python 3.10 (well-supported)
 RUN apt-get update && apt-get install -y \
