@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime
+FROM pytorch/pytorch:2.2.2-cuda11.8-cudnn8-runtime
 
 RUN apt update && apt-get install -y git \
   && pip install --no-cache-dir git+https://github.com/huggingface/transformers
