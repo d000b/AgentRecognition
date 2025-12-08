@@ -1,4 +1,4 @@
-FROM nvidia/cuda:13.0.2-cudnn-runtime-ubuntu24.04
+FROM nvidia/cuda:12.1.1-cudnn-runtime-ubuntu22.04
 
 # Python + venv
 RUN apt-get update && apt-get install -y \
@@ -16,7 +16,7 @@ RUN pip install --upgrade pip setuptools wheel
 # Установка PyTorch с поддержкой CUDA 13.0
 RUN pip install --no-cache-dir \
     torch torchvision torchaudio \
-    --index-url https://download.pytorch.org/whl/cu130
+    --index-url https://download.pytorch.org/whl/cu121
 
 # If CUDA 12.4 packages aren't available yet, try:
 # Option B: Install PyTorch 2.5 with CUDA 12.1 (should work with 5060 Ti)
