@@ -1,11 +1,10 @@
 FROM nvidia/cuda:13.0.2-cudnn-runtime-ubuntu24.04
 
-# 2. Set up Python 3.10 (well-supported)
 RUN apt-get update && apt-get install -y \
-    python3.10 \
-    python3-pip \
-    python3.10-venv \
-    && ln -s /usr/bin/python3.10 /usr/bin/python
+    python3          \
+    python3-pip      \
+    python3-venv     && \
+    ln -s /usr/bin/python3 /usr/bin/python
 
 RUN pip install --no-cache-dir \
     torch \
