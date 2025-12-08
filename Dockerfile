@@ -15,7 +15,7 @@ RUN pip install --upgrade pip setuptools wheel
 
 # Установка PyTorch с поддержкой CUDA 13.0
 RUN pip install --no-cache-dir \
-    torch torchvision torchaudio \
+    torch==2.5.1 torchvision=00.20.0 torchaudio==2.5.1 \
     --index-url https://download.pytorch.org/whl/cu121
 
 # If CUDA 12.4 packages aren't available yet, try:
