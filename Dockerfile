@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda::13.0.2-cudnn-runtime-ubuntu24.04
 
 # 2. Set up Python 3.10 (well-supported)
 RUN apt-get update && apt-get install -y \
@@ -7,12 +7,11 @@ RUN apt-get update && apt-get install -y \
     python3.10-venv \
     && ln -s /usr/bin/python3.10 /usr/bin/python
 
-# 3. Install PyTorch with CUDA 11.8 support
 RUN pip install --no-cache-dir \
     torch \
     torchvision \
     torchaudio \
-    --index-url https://download.pytorch.org/whl/cu118
+    --index-url https://download.pytorch.org/whl/cu130
 
 # If CUDA 12.4 packages aren't available yet, try:
 # Option B: Install PyTorch 2.5 with CUDA 12.1 (should work with 5060 Ti)
@@ -22,13 +21,6 @@ RUN pip install --no-cache-dir \
 #     torchaudio==2.5.0 \
 #     --index-url https://download.pytorch.org/whl/cu121
 
-# Option C: For RTX 5060 Ti, you might need nightly build
-# RUN pip install --no-cache-dir \
-#     --pre torch torchvision torchaudio \
-#     --index-url https://download.pytorch.org/whl/nightly/cu124
-
-
-# 4. Install transformers from git (or specific version)
 RUN  apt-get install -y git \
   && pip install --no-cache-dir git+https://github.com/huggingface/transformers
 
