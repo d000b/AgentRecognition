@@ -1,20 +1,25 @@
 FROM pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
 
-# 3. Install PyTorch with CUDA 12.4 support
-# Option A: Install from PyPI with CUDA 12.4 (if available)
-# RUN pip install --no-cache-dir \
-#   torch==2.7.1+cu118 \
-#    torchvision==0.22.1 \
-#    torchaudio==2.5.0 \
-#    --index-url https://download.pytorch.org/whl/cu118
+# 4. Install transformers from git (or specific version)
+RUN  apt-get install -y git \
+  && pip install --no-cache-dir git+https://github.com/huggingface/transformers
 
-# Option C: For RTX 5060 Ti, you might need nightly build
-# RUN pip install --no-cache-dir \
-#     --pre torch torchvision torchaudio \
-#     --index-url https://download.pytorch.org/whl/nightly/cu124
+# Установка остальных зависимостей
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Создание структуры директорий внутри контейнера
+RUN mkdir -p \
+    /root/.cache/huggingface \
+    /app/logs \
+    /app/temp
 
 WORKDIR /app
+# Копирование исходного кода
+COPY . /app/
 
-COPY check_version.py /app/check_version.py
+# Установка прав
+RUN chmod +x /app/entrypoint.sh
 
-CMD ["python", "/app/check_version.py"]
+# Точка входа
+ENTRYPOINT ["./entrypoint.sh"]
