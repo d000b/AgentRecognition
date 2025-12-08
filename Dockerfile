@@ -13,4 +13,4 @@ FROM pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
 #     --pre torch torchvision torchaudio \
 #     --index-url https://download.pytorch.org/whl/nightly/cu124
 
-ENTRYPOINT [ "pip3 freeze" ]
+CMD ["python", "-m pip freeze"]
