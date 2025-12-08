@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y \
 # 3. Install PyTorch with CUDA 12.4 support
 # Option A: Install from PyPI with CUDA 12.4 (if available)
 RUN pip install --no-cache-dir \
-    torch==2.1.0+cu118 \
-    torchvision==0.20.0 \
-    torchaudio==2.5.0 \
+    torch==2.7.1+cu118 \
+    torchvision==0.22.1 \
+    torchaudio==2.7.1 \
     --index-url https://download.pytorch.org/whl/cu118
 
 # If CUDA 12.4 packages aren't available yet, try:
