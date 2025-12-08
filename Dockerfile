@@ -7,12 +7,11 @@ RUN apt-get update && apt-get install -y \
     python3.10-venv \
     && ln -s /usr/bin/python3.10 /usr/bin/python
 
-# 3. Install PyTorch with CUDA 12.4 support
-# Option A: Install from PyPI with CUDA 12.4 (if available)
+# 3. Install PyTorch with CUDA 11.8 support
 RUN pip install --no-cache-dir \
-    torch==2.5.0 \
-    torchvision==0.20.0 \
-    torchaudio==2.5.0 \
+    torch \
+    torchvision \
+    torchaudio \
     --index-url https://download.pytorch.org/whl/cu118
 
 # If CUDA 12.4 packages aren't available yet, try:
