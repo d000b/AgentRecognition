@@ -1,10 +1,10 @@
 FROM nvidia/cuda:13.0.2-cudnn-runtime-ubuntu24.04
 
 RUN apt-get update && apt-get install -y \
-    python3          \
-    python3-pip      \
-    python3-venv     && \
-    ln -s /usr/bin/python3 /usr/bin/python
+    python3.12       \
+    python3.12-venv  \
+    python3-pip      && \
+    ln -s /usr/bin/python3.12 /usr/bin/python
 
 RUN pip install --no-cache-dir \
     torch \
