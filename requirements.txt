@@ -13,7 +13,7 @@ opencv-python-headless==4.8.1.78
 numpy==1.24.4
 scipy==1.11.4
 tqdm==4.66.1
-accelerate
+accelerate>=0.25.0
 
 # Очереди и фоновые задачи
 celery==5.3.4
