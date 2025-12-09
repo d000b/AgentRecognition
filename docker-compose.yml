@@ -4,7 +4,7 @@ services:
   qwen-vl-api:
     build: .
     container_name: agent-recognition-api
-    image: agent-base
+    image: agent-base:latest
     ports:
       - "8000:8000"
     volumes:
@@ -21,16 +21,8 @@ services:
       # Кэш HuggingFace
       - "D:/storage/AgentRecognition/huggingface_cache:/root/.cache/huggingface"
     
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    
     environment:
-      - CUDA_VISIBLE_DEVICES=0
+      - DOCKER_BUILDKIT=0
       - MODEL_PATH=/app/model_weights
       - UPLOAD_DIR=/app/uploads
       - PROCESSED_DIR=/app/processed
