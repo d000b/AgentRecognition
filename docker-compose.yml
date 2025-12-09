@@ -4,7 +4,7 @@ services:
   qwen-vl-api:
     build: .
     container_name: agent-recognition-api
-    image: agent-base:latest
+    image: agent-base:local
     ports:
       - "8000:8000"
     volumes:
