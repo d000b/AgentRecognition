@@ -37,6 +37,7 @@ services:
       - redis
     networks:
       - agent-network
+      - backend-network
 
     deploy:
       resources:
@@ -55,7 +56,7 @@ services:
       - "D:/storage/AgentRecognition/redis_data:/data"
     command: redis-server --appendonly yes --requirepass redispass123
     networks:
-      - agent-network
+      - backend-network
     restart: unless-stopped
 
   postgres:
@@ -73,7 +74,7 @@ services:
       - "D:/storage/AgentRecognition/postgres_backups:/backups"
       - "E:/LLM/services/AgentRecognition/postgres_init:/docker-entrypoint-initdb.d"
     networks:
-      - agent-network
+      - backend-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -82,9 +83,19 @@ services:
       retries: 5
 
 networks:
+  # Основная внешняя сеть
   agent-network:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
-          gateway: 172.20.0.1
+        - subnet: 172.22.0.0/24
+          gateway: 172.22.0.1
+  
+  # Сеть только для БД и Redis (полностью закрытая)
+  backend-network:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24
+          gateway: 172.23.0.1
