@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  qwen-vl-api:
+    build: .
+    container_name: agent-recognition-api
+    image: agent-base:local
+    ports:
+      - "8000:8000"
+    volumes:
+      # Монтирование модели (только чтение)
+      - "E:/LLM/Qwen3-VL-OMNI:/app/model_weights:ro"
+      
+      # Монтирование хранилищ данных
+      - "D:/storage/AgentRecognition/uploads:/app/uploads"
+      - "D:/storage/AgentRecognition/processed:/app/processed"
+      - "D:/storage/AgentRecognition/temp:/app/temp"
+      - "D:/storage/AgentRecognition/logs:/app/logs"
+      - "D:/storage/AgentRecognition/database:/app/database"
+      
+      # Кэш HuggingFace
+      - "D:/storage/AgentRecognition/huggingface_cache:/root/.cache/huggingface"
+    
+    environment:
+      - DOCKER_BUILDKIT=0
+      - MODEL_PATH=/app/model_weights
+      - UPLOAD_DIR=/app/uploads
+      - PROCESSED_DIR=/app/processed
+      - TEMP_DIR=/app/temp
+      - LOG_DIR=/app/logs
+      - DB_PATH=/app/database
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:////app/database/requests.db
+    
+    restart: unless-stopped
+    depends_on:
+      - redis
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  redis:
+    image: redis:7-alpine
+    container_name: agent-recognition-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "D:/storage/AgentRecognition/redis_data:/data"
+    command: redis-server --appendonly yes --requirepass redispass123
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: agent-recognition-postgres
+    environment:
+      - POSTGRES_DB=agentrecognition
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secure_password123
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+    ports:
+      - "5432:5432"
+    volumes:
+      - "D:/storage/AgentRecognition/postgres_data:/var/lib/postgresql/data"
+      - "D:/storage/AgentRecognition/postgres_backups:/backups"
+      - "E:/LLM/services/AgentRecognition/postgres_init:/docker-entrypoint-initdb.d"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
