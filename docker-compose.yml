@@ -37,6 +37,14 @@ services:
       - redis
     networks:
       - agent-network
+      
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
   redis:
     image: redis:7-alpine
