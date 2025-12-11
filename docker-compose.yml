@@ -37,7 +37,7 @@ services:
       - redis
     networks:
       - agent-network
-      
+
     deploy:
       resources:
         reservations:
@@ -84,3 +84,7 @@ services:
 networks:
   agent-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
